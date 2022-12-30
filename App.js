@@ -16,9 +16,11 @@ export default function App() {
         {modal && <NewProposalModal leave={setModal} />}
         <KeyboardAvoidingView style={styles.bottomSection}>
           <FAB
-            icon="plus"
+            icon={(!modal && "plus") || "check"}
             accessibilityLabel="Nova Proposta"
-            onPress={() => setModal(true)}
+            onPress={() => {
+              !modal ? setModal(!modal) : setModal(!modal); //vira um botao de submit depois que é clicado
+            }}
           />
         </KeyboardAvoidingView>
       </View>

@@ -1,12 +1,6 @@
 import React, { useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  KeyboardAvoidingView,
-} from "react-native";
-import { Appbar, TextInput, List, Switch, DataTable } from "react-native-paper";
+import { View, Text, StyleSheet, Dimensions, ScrollView } from "react-native";
+import { Appbar, TextInput, List, Switch, Divider } from "react-native-paper";
 import { TextInputMask } from "react-native-masked-text";
 import { useState } from "react";
 
@@ -22,6 +16,10 @@ const NewProposalModal = (props) => {
   const [CEP, setCEP] = useState("");
   const [PJ, setPJ] = useState(true);
   const [error, setError] = useState("");
+  const [nome, setNome] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [complemento, setComplemento] = useState("");
+  const [termometro, setTermometro] = useState(0);
 
   const [detalhesEmpresa, setDetalhesEmpresa] = useState({});
   const [detalhesEndereco, setDetalhesEndereco] = useState({});
@@ -77,12 +75,82 @@ const NewProposalModal = (props) => {
         <Appbar.Content title="Nova Proposta" />
       </Appbar.Header>
       <Text>{error}</Text>
-      <KeyboardAvoidingView style={styles.formArea}>
+
+      <ScrollView style={styles.formArea}>
+        <TextInput
+          mode="outlined"
+          label="Nome"
+          value={nome}
+          onChangeText={(text) => setNome(text)}
+        />
+        <TextInput
+          mode="outlined"
+          label="Telefone"
+          value={telefone}
+          onChangeText={(text) => setTelefone(text)}
+          render={(props) => (
+            <TextInputMask
+              style={styles.masked}
+              type={"cel-phone"}
+              value={telefone}
+              onChangeText={(text) => {
+                setTelefone(text);
+              }}
+            />
+          )}
+        />
+        <TextInput
+          mode="outlined"
+          label="CEP"
+          value={CEP}
+          onChangeText={(text) => setCEP(text)}
+          render={(props) => (
+            <TextInputMask
+              style={styles.masked}
+              type={"zip-code"}
+              value={CEP}
+              onChangeText={(text) => {
+                setCEP(text);
+              }}
+            />
+          )}
+        />
+        <List.Accordion
+          title="Detalhes do Endereço"
+          left={(props) => <List.Icon {...props} icon="folder" />}
+        >
+          <List.Item
+            title="Unidade Federativa"
+            description={detalhesEndereco.uf} //{71928720}
+            descriptionNumberOfLines={6}
+          />
+          <List.Item
+            title="Cidade"
+            description={detalhesEndereco.localidade}
+            descriptionNumberOfLines={6}
+          />
+          <List.Item
+            title="Bairro"
+            description={detalhesEndereco.bairro}
+            descriptionNumberOfLines={6}
+          />
+          <List.Item
+            title="Rua"
+            description={detalhesEndereco.logradouro}
+            descriptionNumberOfLines={6}
+          />
+        </List.Accordion>
+        <TextInput
+          mode="outlined"
+          label="Complemento(Incluir número)"
+          value={complemento}
+          onChangeText={(text) => setComplemento(text)}
+        />
+        <Divider style={{ marginVertical: 10 }} />
         <View style={styles.toggle}>
           {(PJ && <Text>PJ</Text>) || <Text>PF</Text>}
           <Switch value={PJ} onChange={() => setPJ(!PJ)} />
         </View>
-
         {(PJ && (
           <View>
             <TextInput
@@ -145,48 +213,7 @@ const NewProposalModal = (props) => {
             )}
           />
         )}
-        <TextInput
-          mode="outlined"
-          label="CEP"
-          value={CEP}
-          onChangeText={(text) => setCEP(text)}
-          render={(props) => (
-            <TextInputMask
-              style={styles.masked}
-              type={"zip-code"}
-              value={CEP}
-              onChangeText={(text) => {
-                setCEP(text);
-              }}
-            />
-          )}
-        />
-        <List.Accordion
-          title="Detalhes do Endereço"
-          left={(props) => <List.Icon {...props} icon="folder" />}
-        >
-          <List.Item
-            title="Unidade Federativa"
-            description={detalhesEndereco.uf} //{71928720}
-            descriptionNumberOfLines={6}
-          />
-          <List.Item
-            title="Cidade"
-            description={detalhesEndereco.localidade}
-            descriptionNumberOfLines={6}
-          />
-          <List.Item
-            title="Bairro"
-            description={detalhesEndereco.bairro}
-            descriptionNumberOfLines={6}
-          />
-          <List.Item
-            title="Rua"
-            description={detalhesEndereco.logradouro}
-            descriptionNumberOfLines={6}
-          />
-        </List.Accordion>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </View>
   );
 };
@@ -202,7 +229,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   formArea: {
-    paddingVertical: 20,
+    paddingTop: 20,
     paddingHorizontal: 20,
     flexDirection: "column",
     gap: 5,
