@@ -19,6 +19,7 @@ const screenDimensions = {
 const NewProposalModal = (props) => {
   const [CNPJ, setCNPJ] = useState("");
   const [CPF, setCPF] = useState("");
+  const [CEP, setCEP] = useState("");
   const [PJ, setPJ] = useState(true);
   const [error, setError] = useState("");
 
@@ -64,7 +65,10 @@ const NewProposalModal = (props) => {
     if (CNPJ.length === 18) {
       getCNPJData(CNPJ);
     }
-  }, [CNPJ]);
+    if (CEP.length === 9) {
+      getCEPData(CEP);
+    }
+  }, [CNPJ, CEP]);
 
   return (
     <View style={styles.container}>
@@ -141,6 +145,47 @@ const NewProposalModal = (props) => {
             )}
           />
         )}
+        <TextInput
+          mode="outlined"
+          label="CEP"
+          value={CEP}
+          onChangeText={(text) => setCEP(text)}
+          render={(props) => (
+            <TextInputMask
+              style={styles.masked}
+              type={"zip-code"}
+              value={CEP}
+              onChangeText={(text) => {
+                setCEP(text);
+              }}
+            />
+          )}
+        />
+        <List.Accordion
+          title="Detalhes do Endereço"
+          left={(props) => <List.Icon {...props} icon="folder" />}
+        >
+          <List.Item
+            title="Unidade Federativa"
+            description={detalhesEndereco.uf} //{71928720}
+            descriptionNumberOfLines={6}
+          />
+          <List.Item
+            title="Cidade"
+            description={detalhesEndereco.localidade}
+            descriptionNumberOfLines={6}
+          />
+          <List.Item
+            title="Bairro"
+            description={detalhesEndereco.bairro}
+            descriptionNumberOfLines={6}
+          />
+          <List.Item
+            title="Rua"
+            description={detalhesEndereco.logradouro}
+            descriptionNumberOfLines={6}
+          />
+        </List.Accordion>
       </KeyboardAvoidingView>
     </View>
   );
