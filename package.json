@@ -9,10 +9,14 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/roboto": "^0.2.2",
     "expo": "~47.0.9",
     "expo-status-bar": "~1.4.2",
     "react": "18.1.0",
-    "react-native": "0.70.5"
+    "react-native": "0.70.5",
+    "react-native-global-props": "^1.1.5",
+    "react-native-masked-text": "^1.13.0",
+    "react-native-paper": "^5.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
