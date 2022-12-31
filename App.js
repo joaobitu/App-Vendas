@@ -1,32 +1,21 @@
-import { useState } from "react";
 import { Provider as PaperProvider } from "react-native-paper";
 import NewProposalModal from "./components/NewProposalModal";
-import { NativeRouter, Route, Link, Routes } from "react-router-native";
+
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Homepage from "./components/Homepage";
 
+const Stack = createNativeStackNavigator();
+
 export default function App() {
-  const [proposals, setProposals] = useState([]);
   return (
-    <NativeRouter>
+    <NavigationContainer>
       <PaperProvider>
-        <Routes>
-          <Route
-            exact
-            path="/"
-            element={<Homepage proposalsList={proposals} />}
-          />
-          <Route
-            exact
-            path="/newProposal"
-            element={
-              <NewProposalModal
-                proposalsList={proposals}
-                submitNewProposal={setProposals}
-              />
-            }
-          />
-        </Routes>
+        <Stack.Navigator initialRouteName="Propostas">
+          <Stack.Screen name="Propostas" component={Homepage} />
+          <Stack.Screen name="Nova Proposta" component={NewProposalModal} />
+        </Stack.Navigator>
       </PaperProvider>
-    </NativeRouter>
+    </NavigationContainer>
   );
 }

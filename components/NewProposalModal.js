@@ -18,14 +18,14 @@ import {
 import { TextInputMask } from "react-native-masked-text";
 import { useState } from "react";
 import Slider from "@react-native-community/slider";
-import { Link } from "react-router-native";
+
 //pegando as dimensões da tela para implementar correntamente o modal
 const screenDimensions = {
   height: Dimensions.get("window").height,
   width: Dimensions.get("window").width,
 };
 
-const NewProposalModal = (props) => {
+const NewProposalModal = ({ route, navigation }) => {
   const [CNPJ, setCNPJ] = useState("");
   const [CPF, setCPF] = useState("");
   const [CEP, setCEP] = useState("");
@@ -37,6 +37,9 @@ const NewProposalModal = (props) => {
   const [termometro, setTermometro] = useState(0);
   const [detalhesEmpresa, setDetalhesEmpresa] = useState({});
   const [detalhesEndereco, setDetalhesEndereco] = useState({});
+
+  const { proposalsList } = route.params;
+  const { submitNewProposal } = route.params;
 
   const getCEPData = async (cep) => {
     const cleanCEP = cep.replace(/\D/g, "");
@@ -83,12 +86,6 @@ const NewProposalModal = (props) => {
 
   return (
     <View style={styles.container}>
-      <Appbar.Header elevated="true">
-        <Link to="/">
-          <Appbar.BackAction />
-        </Link>
-        <Appbar.Content title="Nova Proposta" />
-      </Appbar.Header>
       <Text>{error}</Text>
 
       <ScrollView style={styles.formArea}>
@@ -234,17 +231,19 @@ const NewProposalModal = (props) => {
             )}
           />
         )}
+        <Divider style={{ marginVertical: 10 }} />
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
+            flexDirection: "column",
+            justifyContent: "center",
             alignItems: "center",
+
             marginBottom: 100,
           }}
         >
-          <Text>Termômetro</Text>
+          <Text>Termômetro da Venda</Text>
           <Slider
-            style={{ flex: 1 }}
+            style={{ flex: 1, minWidth: "100%" }}
             minimumValue={0}
             maximumValue={100}
             step={10}
@@ -253,29 +252,28 @@ const NewProposalModal = (props) => {
           <Text>{termometro}%</Text>
         </View>
         <KeyboardAvoidingView style={styles.bottomSection}>
-          <Link to="/">
-            <FAB
-              icon="check"
-              accessibilityLabel="Nova Proposta"
-              onPress={() =>
-                props.submitNewProposal([
-                  ...props.proposalsList,
-                  {
-                    CEP,
-                    CNPJ,
-                    CPF,
-                    PJ,
-                    nome,
-                    telefone,
-                    complemento,
-                    termometro,
-                    detalhesEmpresa,
-                    detalhesEndereco,
-                  },
-                ])
-              }
-            />
-          </Link>
+          <FAB
+            icon="check"
+            accessibilityLabel="Nova Proposta"
+            onPress={() => {
+              submitNewProposal([
+                ...proposalsList,
+                {
+                  CEP,
+                  CNPJ,
+                  CPF,
+                  PJ,
+                  nome,
+                  telefone,
+                  complemento,
+                  termometro,
+                  detalhesEmpresa,
+                  detalhesEndereco,
+                },
+              ]);
+              navigation.navigate("Propostas");
+            }}
+          />
         </KeyboardAvoidingView>
       </ScrollView>
     </View>

@@ -2,18 +2,28 @@ import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { KeyboardAvoidingView, StyleSheet, Text, View } from "react-native";
 import { FAB } from "react-native-paper";
-import { Link } from "react-router-native";
+import { useState } from "react";
+
 import ProposalList from "./ProposalList";
 
-export default function Homepage(props) {
+export default function Homepage({ navigation }) {
+  const [proposals, setProposals] = useState([]);
+
   return (
     <View style={styles.container}>
-      <Text>Propostas de Venda</Text>
-      <ProposalList proposalsList={props.proposalList} />
+      <Text>{JSON.stringify(proposals[0])}</Text>
+      <ProposalList proposalsList={proposals} />
       <KeyboardAvoidingView style={styles.bottomSection}>
-        <Link to="/newProposal">
-          <FAB icon="plus" accessibilityLabel="Nova Proposta" />
-        </Link>
+        <FAB
+          icon="plus"
+          accessibilityLabel="Nova Proposta"
+          onPress={() =>
+            navigation.navigate("Nova Proposta", {
+              proposalsList: proposals,
+              submitNewProposal: setProposals,
+            })
+          }
+        />
       </KeyboardAvoidingView>
       <StatusBar style="auto" />
     </View>
