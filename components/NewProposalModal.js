@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Dimensions, ScrollView } from "react-native";
 import { Appbar, TextInput, List, Switch, Divider } from "react-native-paper";
 import { TextInputMask } from "react-native-masked-text";
 import { useState } from "react";
-
+import Slider from "@react-native-community/slider";
 //pegando as dimensões da tela para implementar correntamente o modal
 const screenDimensions = {
   height: Dimensions.get("window").height,
@@ -20,7 +20,6 @@ const NewProposalModal = (props) => {
   const [telefone, setTelefone] = useState("");
   const [complemento, setComplemento] = useState("");
   const [termometro, setTermometro] = useState(0);
-
   const [detalhesEmpresa, setDetalhesEmpresa] = useState({});
   const [detalhesEndereco, setDetalhesEndereco] = useState({});
 
@@ -213,6 +212,24 @@ const NewProposalModal = (props) => {
             )}
           />
         )}
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 100,
+          }}
+        >
+          <Text>Termômetro</Text>
+          <Slider
+            style={{ flex: 1 }}
+            minimumValue={0}
+            maximumValue={100}
+            step={10}
+            onSlidingComplete={(value) => setTermometro(value)}
+          />
+          <Text>{termometro}%</Text>
+        </View>
       </ScrollView>
     </View>
   );
