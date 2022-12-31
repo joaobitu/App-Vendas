@@ -2,7 +2,7 @@ import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { KeyboardAvoidingView, StyleSheet, Text, View } from "react-native";
 import { FAB } from "react-native-paper";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import ProposalList from "./ProposalList";
 
@@ -11,7 +11,10 @@ export default function Homepage({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <ProposalList proposalsList={proposals} />
+      <ProposalList
+        proposalsList={proposals}
+        modifyProposalsList={setProposals}
+      />
       <KeyboardAvoidingView style={styles.bottomSection}>
         <FAB
           icon="plus"

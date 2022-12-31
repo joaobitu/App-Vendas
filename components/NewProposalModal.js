@@ -33,6 +33,7 @@ const NewProposalModal = ({ route, navigation }) => {
   const [error, setError] = useState("");
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
+  const [email, setEmail] = useState("");
   const [complemento, setComplemento] = useState("");
   const [termometro, setTermometro] = useState(0);
   const [detalhesEmpresa, setDetalhesEmpresa] = useState({});
@@ -88,173 +89,181 @@ const NewProposalModal = ({ route, navigation }) => {
     <View style={styles.container}>
       <Text>{error}</Text>
 
-      <ScrollView style={styles.formArea}>
-        <TextInput
-          mode="outlined"
-          label="Nome"
-          value={nome}
-          onChangeText={(text) => setNome(text)}
-        />
-        <TextInput
-          mode="outlined"
-          label="Telefone"
-          value={telefone}
-          onChangeText={(text) => setTelefone(text)}
-          render={(props) => (
-            <TextInputMask
-              style={styles.masked}
-              type={"cel-phone"}
-              value={telefone}
-              onChangeText={(text) => {
-                setTelefone(text);
-              }}
-            />
-          )}
-        />
-        <TextInput
-          mode="outlined"
-          label="CEP"
-          value={CEP}
-          onChangeText={(text) => {
-            setCEP(text);
-          }}
-          render={(props) => (
-            <TextInputMask
-              style={styles.masked}
-              type={"zip-code"}
-              value={CEP}
-              onChangeText={(text) => {
-                setCEP(text);
-              }}
-            />
-          )}
-        />
-        {CEP.length === 9 && (
-          <List.Accordion
-            title="Detalhes do Endereço"
-            left={(props) => <List.Icon {...props} icon="folder" />}
-          >
-            <List.Item
-              title="Unidade Federativa"
-              description={detalhesEndereco.uf} //{71928720}
-              descriptionNumberOfLines={6}
-            />
-            <List.Item
-              title="Cidade"
-              description={detalhesEndereco.localidade}
-              descriptionNumberOfLines={6}
-            />
-            <List.Item
-              title="Bairro"
-              description={detalhesEndereco.bairro}
-              descriptionNumberOfLines={6}
-            />
-            <List.Item
-              title="Rua"
-              description={detalhesEndereco.logradouro}
-              descriptionNumberOfLines={6}
-            />
-          </List.Accordion>
-        )}
-        <TextInput
-          mode="outlined"
-          label="Complemento(Incluir número)"
-          value={complemento}
-          onChangeText={(text) => setComplemento(text)}
-        />
-        <Divider style={{ marginVertical: 10 }} />
-        <View style={styles.toggle}>
-          {(PJ && <Text>PJ</Text>) || <Text>PF</Text>}
-          <Switch value={PJ} onChange={() => setPJ(!PJ)} />
-        </View>
-        {(PJ && (
-          <View>
-            <TextInput
-              mode="outlined"
-              label="CNPJ"
-              value={CNPJ}
-              onChangeText={(text) => setCNPJ(text)}
-              render={(props) => (
-                <TextInputMask
-                  style={styles.masked}
-                  type={"cnpj"}
-                  value={CNPJ}
-                  onChangeText={(text) => {
-                    setCNPJ(text);
-                  }}
-                />
-              )}
-            />
-            {CNPJ.length === 18 && (
-              <List.Accordion
-                title="Detalhes da Empresa"
-                left={(props) => <List.Icon {...props} icon="folder" />}
-              >
-                <List.Item
-                  title="Nome Fantasia"
-                  description={detalhesEmpresa["NOME FANTASIA"]}
-                  descriptionNumberOfLines={6}
-                />
-                <List.Item
-                  title="Razão Social"
-                  description={detalhesEmpresa["RAZAO SOCIAL"]}
-                  descriptionNumberOfLines={6}
-                />
-                <List.Item
-                  title="Status"
-                  description={detalhesEmpresa.STATUS}
-                  descriptionNumberOfLines={6}
-                />
-                <List.Item
-                  title="CNAE"
-                  description={detalhesEmpresa["CNAE PRINCIPAL DESCRICAO"]}
-                  descriptionNumberOfLines={6}
-                />
-              </List.Accordion>
-            )}
-          </View>
-        )) || (
+      <KeyboardAvoidingView style={{ paddingBottom: 120 }}>
+        <ScrollView style={styles.formArea}>
           <TextInput
             mode="outlined"
-            label="CPF"
-            value={CPF}
-            onChangeText={(text) => setCPF(text)}
+            label="Nome"
+            value={nome}
+            onChangeText={(text) => setNome(text)}
+          />
+          <TextInput
+            mode="outlined"
+            label="Telefone"
+            value={telefone}
+            onChangeText={(text) => setTelefone(text)}
             render={(props) => (
               <TextInputMask
                 style={styles.masked}
-                type={"cpf"}
-                value={CPF}
+                type={"cel-phone"}
+                value={telefone}
                 onChangeText={(text) => {
-                  setCPF(text);
+                  setTelefone(text);
                 }}
               />
             )}
           />
-        )}
-        <Divider style={{ marginVertical: 10 }} />
-        <View
-          style={{
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-
-            marginBottom: 100,
-          }}
-        >
-          <Text>Termômetro da Venda</Text>
-          <Slider
-            style={{ flex: 1, minWidth: "100%" }}
-            minimumValue={0}
-            maximumValue={100}
-            step={10}
-            onSlidingComplete={(value) => setTermometro(value)}
+          <TextInput
+            mode="outlined"
+            label="Email"
+            value={email}
+            onChangeText={(text) => setEmail(text)}
           />
-          <Text>{termometro}%</Text>
-        </View>
-        <KeyboardAvoidingView style={styles.bottomSection}>
+          <TextInput
+            mode="outlined"
+            label="CEP"
+            value={CEP}
+            onChangeText={(text) => {
+              setCEP(text);
+            }}
+            render={(props) => (
+              <TextInputMask
+                style={styles.masked}
+                type={"zip-code"}
+                value={CEP}
+                onChangeText={(text) => {
+                  setCEP(text);
+                }}
+              />
+            )}
+          />
+          {CEP.length === 9 && (
+            <List.Accordion
+              title="Detalhes do Endereço"
+              left={(props) => <List.Icon {...props} icon="map-check" />}
+            >
+              <List.Item
+                title="Unidade Federativa"
+                description={detalhesEndereco.uf} //{71928720}
+                descriptionNumberOfLines={6}
+              />
+              <List.Item
+                title="Cidade"
+                description={detalhesEndereco.localidade}
+                descriptionNumberOfLines={6}
+              />
+              <List.Item
+                title="Bairro"
+                description={detalhesEndereco.bairro}
+                descriptionNumberOfLines={6}
+              />
+              <List.Item
+                title="Rua"
+                description={detalhesEndereco.logradouro}
+                descriptionNumberOfLines={6}
+              />
+            </List.Accordion>
+          )}
+          <TextInput
+            mode="outlined"
+            label="Complemento(Incluir número)"
+            value={complemento}
+            onChangeText={(text) => setComplemento(text)}
+          />
+          <Divider style={{ marginVertical: 10 }} />
+          <View style={styles.toggle}>
+            {(PJ && <Text>PJ</Text>) || <Text>PF</Text>}
+            <Switch value={PJ} onChange={() => setPJ(!PJ)} />
+          </View>
+          {(PJ && (
+            <View>
+              <TextInput
+                mode="outlined"
+                label="CNPJ"
+                value={CNPJ}
+                onChangeText={(text) => setCNPJ(text)}
+                render={(props) => (
+                  <TextInputMask
+                    style={styles.masked}
+                    type={"cnpj"}
+                    value={CNPJ}
+                    onChangeText={(text) => {
+                      setCNPJ(text);
+                    }}
+                  />
+                )}
+              />
+              {CNPJ.length === 18 && (
+                <List.Accordion
+                  title="Detalhes da Empresa"
+                  left={(props) => (
+                    <List.Icon {...props} icon="office-building" />
+                  )}
+                >
+                  <List.Item
+                    title="Nome Fantasia"
+                    description={detalhesEmpresa["NOME FANTASIA"]}
+                    descriptionNumberOfLines={6}
+                  />
+                  <List.Item
+                    title="Razão Social"
+                    description={detalhesEmpresa["RAZAO SOCIAL"]}
+                    descriptionNumberOfLines={6}
+                  />
+                  <List.Item
+                    title="Status"
+                    description={detalhesEmpresa.STATUS}
+                    descriptionNumberOfLines={6}
+                  />
+                  <List.Item
+                    title="CNAE"
+                    description={detalhesEmpresa["CNAE PRINCIPAL DESCRICAO"]}
+                    descriptionNumberOfLines={6}
+                  />
+                </List.Accordion>
+              )}
+            </View>
+          )) || (
+            <TextInput
+              mode="outlined"
+              label="CPF"
+              value={CPF}
+              onChangeText={(text) => setCPF(text)}
+              render={(props) => (
+                <TextInputMask
+                  style={styles.masked}
+                  type={"cpf"}
+                  value={CPF}
+                  onChangeText={(text) => {
+                    setCPF(text);
+                  }}
+                />
+              )}
+            />
+          )}
+          <Divider style={{ marginVertical: 10 }} />
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 100,
+            }}
+          >
+            <Text>Termômetro da Venda</Text>
+            <Slider
+              style={{ flex: 1, minWidth: "100%" }}
+              minimumValue={0}
+              maximumValue={100}
+              step={10}
+              onSlidingComplete={(value) => setTermometro(value)}
+            />
+            <Text>{termometro}%</Text>
+          </View>
           <FAB
             icon="check"
             accessibilityLabel="Nova Proposta"
+            style={styles.bottomSection}
             onPress={() => {
               submitNewProposal([
                 ...proposalsList,
@@ -265,17 +274,20 @@ const NewProposalModal = ({ route, navigation }) => {
                   PJ,
                   nome,
                   telefone,
+                  email,
                   complemento,
                   termometro,
                   detalhesEmpresa,
                   detalhesEndereco,
+                  criadoEm: new Date(),
+                  key: proposalsList.length + 1,
                 },
               ]);
               navigation.navigate("Propostas");
             }}
           />
-        </KeyboardAvoidingView>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 };
@@ -291,10 +303,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   formArea: {
-    paddingTop: 20,
     paddingHorizontal: 20,
     flexDirection: "column",
-    gap: 5,
   },
   masked: {
     marginLeft: 15,
@@ -302,7 +312,7 @@ const styles = StyleSheet.create({
   },
   bottomSection: {
     position: "absolute",
-    bottom: 50,
+    bottom: 20,
     right: 20,
   },
   toggle: {
