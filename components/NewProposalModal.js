@@ -1,9 +1,24 @@
 import React, { useEffect } from "react";
-import { View, Text, StyleSheet, Dimensions, ScrollView } from "react-native";
-import { Appbar, TextInput, List, Switch, Divider } from "react-native-paper";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+  KeyboardAvoidingView,
+} from "react-native";
+import {
+  Appbar,
+  TextInput,
+  List,
+  Switch,
+  Divider,
+  FAB,
+} from "react-native-paper";
 import { TextInputMask } from "react-native-masked-text";
 import { useState } from "react";
 import Slider from "@react-native-community/slider";
+import { Link } from "react-router-native";
 //pegando as dimensões da tela para implementar correntamente o modal
 const screenDimensions = {
   height: Dimensions.get("window").height,
@@ -70,7 +85,9 @@ const NewProposalModal = (props) => {
   return (
     <View style={styles.container}>
       <Appbar.Header elevated="true">
-        <Appbar.BackAction onPress={() => props.leave(false)} />
+        <Link to="/">
+          <Appbar.BackAction />
+        </Link>
         <Appbar.Content title="Nova Proposta" />
       </Appbar.Header>
       <Text>{error}</Text>
@@ -102,7 +119,9 @@ const NewProposalModal = (props) => {
           mode="outlined"
           label="CEP"
           value={CEP}
-          onChangeText={(text) => setCEP(text)}
+          onChangeText={(text) => {
+            setCEP(text);
+          }}
           render={(props) => (
             <TextInputMask
               style={styles.masked}
@@ -230,6 +249,11 @@ const NewProposalModal = (props) => {
           />
           <Text>{termometro}%</Text>
         </View>
+        <KeyboardAvoidingView style={styles.bottomSection}>
+          <Link to="/">
+            <FAB icon="plus" accessibilityLabel="Nova Proposta" />
+          </Link>
+        </KeyboardAvoidingView>
       </ScrollView>
     </View>
   );
