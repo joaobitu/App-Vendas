@@ -11,7 +11,6 @@ export default function Homepage({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text>{JSON.stringify(proposals[0])}</Text>
       <ProposalList proposalsList={proposals} />
       <KeyboardAvoidingView style={styles.bottomSection}>
         <FAB
