@@ -27,22 +27,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 50,
   },
-  addButton: {
-    backgroundColor: "#42A5F5",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 9999,
-    width: 170,
-  },
+
   bottomSection: {
     position: "absolute",
     bottom: 50,
     right: 20,
-  },
-  addButtonText: {
-    fontSize: 16,
-    color: "#fff",
-
-    fontWeight: "700",
   },
 });

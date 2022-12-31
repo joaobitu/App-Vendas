@@ -15,7 +15,16 @@ export default function App() {
             path="/"
             element={<Homepage proposalsList={proposals} />}
           />
-          <Route exact path="/newProposal" element={<NewProposalModal />} />
+          <Route
+            exact
+            path="/newProposal"
+            element={
+              <NewProposalModal
+                proposalsList={proposals}
+                submitNewProposal={setProposals}
+              />
+            }
+          />
         </Routes>
       </PaperProvider>
     </NativeRouter>

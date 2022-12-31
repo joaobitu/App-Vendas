@@ -66,13 +66,12 @@ const NewProposalModal = (props) => {
         const data = await response.json();
         setDetalhesEmpresa(data);
       } else {
-        throw new Error(`Request failed: ${response.statusText}`);
+        throw new Error(`Request failed: ${response.status}`);
       }
     } catch (error) {
       setError(error.message);
     }
   };
-
   useEffect(() => {
     if (CNPJ.length === 18) {
       getCNPJData(CNPJ);
@@ -133,31 +132,33 @@ const NewProposalModal = (props) => {
             />
           )}
         />
-        <List.Accordion
-          title="Detalhes do Endereço"
-          left={(props) => <List.Icon {...props} icon="folder" />}
-        >
-          <List.Item
-            title="Unidade Federativa"
-            description={detalhesEndereco.uf} //{71928720}
-            descriptionNumberOfLines={6}
-          />
-          <List.Item
-            title="Cidade"
-            description={detalhesEndereco.localidade}
-            descriptionNumberOfLines={6}
-          />
-          <List.Item
-            title="Bairro"
-            description={detalhesEndereco.bairro}
-            descriptionNumberOfLines={6}
-          />
-          <List.Item
-            title="Rua"
-            description={detalhesEndereco.logradouro}
-            descriptionNumberOfLines={6}
-          />
-        </List.Accordion>
+        {CEP.length === 9 && (
+          <List.Accordion
+            title="Detalhes do Endereço"
+            left={(props) => <List.Icon {...props} icon="folder" />}
+          >
+            <List.Item
+              title="Unidade Federativa"
+              description={detalhesEndereco.uf} //{71928720}
+              descriptionNumberOfLines={6}
+            />
+            <List.Item
+              title="Cidade"
+              description={detalhesEndereco.localidade}
+              descriptionNumberOfLines={6}
+            />
+            <List.Item
+              title="Bairro"
+              description={detalhesEndereco.bairro}
+              descriptionNumberOfLines={6}
+            />
+            <List.Item
+              title="Rua"
+              description={detalhesEndereco.logradouro}
+              descriptionNumberOfLines={6}
+            />
+          </List.Accordion>
+        )}
         <TextInput
           mode="outlined"
           label="Complemento(Incluir número)"
@@ -187,31 +188,33 @@ const NewProposalModal = (props) => {
                 />
               )}
             />
-            <List.Accordion
-              title="Detalhes da Empresa"
-              left={(props) => <List.Icon {...props} icon="folder" />}
-            >
-              <List.Item
-                title="Nome Fantasia"
-                description={detalhesEmpresa["NOME FANTASIA"]}
-                descriptionNumberOfLines={6}
-              />
-              <List.Item
-                title="Razão Social"
-                description={detalhesEmpresa["RAZAO SOCIAL"]}
-                descriptionNumberOfLines={6}
-              />
-              <List.Item
-                title="Status"
-                description={detalhesEmpresa.STATUS}
-                descriptionNumberOfLines={6}
-              />
-              <List.Item
-                title="CNAE"
-                description={detalhesEmpresa["CNAE PRINCIPAL DESCRICAO"]}
-                descriptionNumberOfLines={6}
-              />
-            </List.Accordion>
+            {CNPJ.length === 18 && (
+              <List.Accordion
+                title="Detalhes da Empresa"
+                left={(props) => <List.Icon {...props} icon="folder" />}
+              >
+                <List.Item
+                  title="Nome Fantasia"
+                  description={detalhesEmpresa["NOME FANTASIA"]}
+                  descriptionNumberOfLines={6}
+                />
+                <List.Item
+                  title="Razão Social"
+                  description={detalhesEmpresa["RAZAO SOCIAL"]}
+                  descriptionNumberOfLines={6}
+                />
+                <List.Item
+                  title="Status"
+                  description={detalhesEmpresa.STATUS}
+                  descriptionNumberOfLines={6}
+                />
+                <List.Item
+                  title="CNAE"
+                  description={detalhesEmpresa["CNAE PRINCIPAL DESCRICAO"]}
+                  descriptionNumberOfLines={6}
+                />
+              </List.Accordion>
+            )}
           </View>
         )) || (
           <TextInput
@@ -251,7 +254,27 @@ const NewProposalModal = (props) => {
         </View>
         <KeyboardAvoidingView style={styles.bottomSection}>
           <Link to="/">
-            <FAB icon="plus" accessibilityLabel="Nova Proposta" />
+            <FAB
+              icon="check"
+              accessibilityLabel="Nova Proposta"
+              onPress={() =>
+                props.submitNewProposal([
+                  ...props.proposalsList,
+                  {
+                    CEP,
+                    CNPJ,
+                    CPF,
+                    PJ,
+                    nome,
+                    telefone,
+                    complemento,
+                    termometro,
+                    detalhesEmpresa,
+                    detalhesEndereco,
+                  },
+                ])
+              }
+            />
           </Link>
         </KeyboardAvoidingView>
       </ScrollView>
@@ -278,6 +301,11 @@ const styles = StyleSheet.create({
   masked: {
     marginLeft: 15,
     marginTop: 10,
+  },
+  bottomSection: {
+    position: "absolute",
+    bottom: 50,
+    right: 20,
   },
   toggle: {
     flexDirection: "row",
