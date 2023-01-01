@@ -16,7 +16,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 const ListSortingAndFiltering = ({ submitSortedVersion, proposalsList }) => {
   // Sort the data array in-place using the sortKey
   const searchList = ["Nome", "Email", "Telefone"];
-  const [sorting, setSorting] = useState("");
+  const [sorting, setSorting] = useState("novas");
   const [filters, setFilters] = useState([]);
   const [isPJ, setIsPJ] = useState(true);
 
@@ -31,6 +31,7 @@ const ListSortingAndFiltering = ({ submitSortedVersion, proposalsList }) => {
   };
 
   const [selectedSearch, setSelectedSearch] = useState("");
+  const [textValue, setTextValue] = useState("");
 
   const addToFilters = (filter) => {
     const newFilters = [...filters];
@@ -43,42 +44,60 @@ const ListSortingAndFiltering = ({ submitSortedVersion, proposalsList }) => {
     setFilters(newFiltersList);
   };
 
-  const sortProposals = (sorting, PJ, filtersArray) => {
+  const sortProposals = (
+    sortingChoice,
+    PJ,
+    filtersArray,
+    searchText,
+    searchOption
+  ) => {
     let sortedVersion = [...proposalsList];
-    switch (sorting) {
-      case sorting == "quentes":
-        sortedVersion.sort((a, b) => b.termometro - a.termometro);
-        break;
-      case sorting == "novas":
-        sortedVersion.sort((a, b) => a.criadoEm - b.criadoEm);
-        break;
-    }
+    //filtering between PJ and PF
     if (PJ) {
       sortedVersion = sortedVersion.filter((obj) => obj.PJ === true);
     } else {
       sortedVersion = sortedVersion.filter((obj) => obj.PJ !== true);
     }
+    // filtering if it has the Chips selected
     filtersArray.map((obj) => {
       if (obj === "Apenas Goiânia") {
         sortedVersion = sortedVersion.filter(
           (obj) => obj.detalhesEndereco?.logradouro === "Goiânia"
         );
-      }
-      if (obj === "Termômetro > 50") {
+      } else if (obj === "Termômetro > 50") {
         sortedVersion = sortedVersion.filter((obj) => obj.termometro >= 50);
       }
     });
+    // sorting between quentes or novos
+    if (sortingChoice == "quentes") {
+      sortedVersion.sort((a, b) => b.termometro - a.termometro);
+      console.log(sortedVersion);
+    } else {
+      sortedVersion.sort((a, b) => {
+        a.criadoEm - b.criadoEm;
+      });
+    }
+    console.log(searchOption);
+    if (searchOption === "Nome") {
+      sortedVersion = sortedVersion.filter((obj) =>
+        obj.nome.startsWith(searchText)
+      );
+    }
     submitSortedVersion(sortedVersion);
   };
 
   useEffect(() => {
-    sortProposals(sorting, isPJ, filters);
-  }, [sorting, isPJ, filters]);
+    sortProposals(sorting, isPJ, filters, textValue, selectedSearch);
+  }, [sorting, isPJ, filters, textValue, selectedSearch]);
 
   return (
     <View>
       <View style={{ flexDirection: "row", marginHorizontal: -20 }}>
-        <Searchbar placeholder={`Busque pelo`} style={{ width: "65%" }} />
+        <Searchbar
+          placeholder={`Busque pelo`}
+          style={{ width: "65%" }}
+          onChangeText={(text) => setTextValue(text)}
+        />
 
         <SelectDropdown
           defaultButtonText={"Nome"}
