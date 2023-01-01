@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, TextInput } from "react-native";
 
 import { useState } from "react";
 import { Modal, Portal, Text, List, FAB } from "react-native-paper";
@@ -7,6 +7,10 @@ import { Modal, Portal, Text, List, FAB } from "react-native-paper";
 export default function ProposalList({ proposalsList, modifyProposalsList }) {
   const [selectedProposal, setSelectedProposal] = useState({});
   const [visible, setVisible] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
+  const [newTelefone, setNewTelefone] = useState("");
+  const [newLogradouro, setNewLogradouro] = useState("");
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -17,7 +21,15 @@ export default function ProposalList({ proposalsList, modifyProposalsList }) {
     );
     modifyProposalsList(newProposalsList);
   };
+  const editComplete = () => {
+    const newProposalsList = [...proposalsList];
 
+    newProposalsList[selectedProposal.key - 1].detalhesEndereco.logradouro =
+      newLogradouro;
+    newProposalsList[selectedProposal.key - 1].telefone = newTelefone;
+    newProposalsList[selectedProposal.key - 1].email = newEmail;
+    modifyProposalsList(newProposalsList);
+  };
   const containerStyle = {
     backgroundColor: "white",
     padding: 20,
@@ -86,25 +98,61 @@ export default function ProposalList({ proposalsList, modifyProposalsList }) {
               </View>
             )}
             <Text>Nome: {selectedProposal.nome}</Text>
-            <Text>Email: {selectedProposal.email}</Text>
-            <Text>Telefone: {selectedProposal.telefone}</Text>
+            <View style={styles.editableData}>
+              <Text>Email: </Text>
+              {(!edit && <Text>{selectedProposal.email}</Text>) || (
+                <TextInput
+                  style={styles.editableInput}
+                  defaultValue={selectedProposal.email}
+                  onChangeText={(text) => {
+                    setNewEmail(text);
+                  }}
+                />
+              )}
+            </View>
+
+            <View style={styles.editableData}>
+              <Text>Telefone: </Text>
+              {(!edit && <Text>{selectedProposal.telefone}</Text>) || (
+                <TextInput
+                  style={styles.editableInput}
+                  defaultValue={selectedProposal.telefone}
+                  onChangeText={(text) => {
+                    setNewTelefone(text);
+                  }}
+                />
+              )}
+            </View>
             <Text>CEP: {selectedProposal.CEP}</Text>
             <Text>UF: {selectedProposal.detalhesEndereco?.uf}</Text>
             <Text>Cidade: {selectedProposal.detalhesEndereco?.localidade}</Text>
             <Text>Bairro: {selectedProposal.detalhesEndereco?.bairro}</Text>
-            <Text>
-              Logradouro: {selectedProposal.detalhesEndereco?.logradouro}
-            </Text>
+
+            <View style={styles.editableData}>
+              <Text>Logradouro: </Text>
+              {(!edit && (
+                <Text>{selectedProposal.detalhesEndereco?.logradouro}</Text>
+              )) || (
+                <TextInput
+                  style={styles.editableInput}
+                  defaultValue={selectedProposal.detalhesEndereco?.logradouro}
+                  onChangeText={(text) => setNewLogradouro(text)}
+                />
+              )}
+            </View>
             <Text>Complemento: {selectedProposal.complemento}</Text>
             <Text>
               Data da Proposta: {JSON.stringify(selectedProposal.criadoEm)}
             </Text>
-            <Text>Termômetro: {selectedProposal.termometro}</Text>
+            <Text>Termômetro: {selectedProposal.termometro}%</Text>
             <View style={styles.icones}>
               <FAB
-                icon="pencil"
+                icon={(!edit && "pencil") || "check"}
                 style={styles.fab}
-                onPress={() => console.log("Pressed")}
+                onPress={() => {
+                  editComplete();
+                  setEdit(!edit);
+                }}
               />
               <FAB
                 icon="trash-can"
@@ -139,5 +187,13 @@ const styles = StyleSheet.create({
   },
   fab: {
     marginHorizontal: 5,
+  },
+  editableData: {
+    flexDirection: "row",
+  },
+  editableInput: {
+    backgroundColor: "#eaddff",
+    paddingHorizontal: 5,
+    borderRadius: 20,
   },
 });
