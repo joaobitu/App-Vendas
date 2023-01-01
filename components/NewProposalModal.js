@@ -7,14 +7,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
 } from "react-native";
-import {
-  Appbar,
-  TextInput,
-  List,
-  Switch,
-  Divider,
-  FAB,
-} from "react-native-paper";
+import { TextInput, List, Switch, Divider, FAB } from "react-native-paper";
 import { TextInputMask } from "react-native-masked-text";
 import { useState } from "react";
 import Slider from "@react-native-community/slider";

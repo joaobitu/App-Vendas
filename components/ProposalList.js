@@ -4,7 +4,11 @@ import { View, StyleSheet, ScrollView, TextInput } from "react-native";
 import { useState } from "react";
 import { Modal, Portal, Text, List, FAB, Divider } from "react-native-paper";
 
-export default function ProposalList({ proposalsList, modifyProposalsList }) {
+export default function ProposalList({
+  proposalsList,
+  modifyProposalsList,
+  sortedList,
+}) {
   const [selectedProposal, setSelectedProposal] = useState({});
   const [visible, setVisible] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -38,7 +42,7 @@ export default function ProposalList({ proposalsList, modifyProposalsList }) {
   };
   return (
     <ScrollView style={{ marginBottom: 60 }}>
-      {proposalsList.slice(0, 3 * pagination).map((obj, index) => (
+      {sortedList.slice(0, 3 * pagination).map((obj, index) => (
         <View>
           <List.Item
             key={index}
@@ -67,7 +71,7 @@ export default function ProposalList({ proposalsList, modifyProposalsList }) {
           <Divider />
         </View>
       ))}
-      {proposalsList.length > 3 * pagination && (
+      {sortedList.length > 3 * pagination && (
         <FAB
           style={{ alignSelf: "center", marginVertical: 10 }}
           label="Carregar Mais"
