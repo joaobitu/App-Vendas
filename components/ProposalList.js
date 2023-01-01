@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet, ScrollView, TextInput } from "react-native";
 
 import { useState } from "react";
-import { Modal, Portal, Text, List, FAB } from "react-native-paper";
+import { Modal, Portal, Text, List, FAB, Divider } from "react-native-paper";
 
 export default function ProposalList({ proposalsList, modifyProposalsList }) {
   const [selectedProposal, setSelectedProposal] = useState({});
@@ -11,6 +11,7 @@ export default function ProposalList({ proposalsList, modifyProposalsList }) {
   const [newEmail, setNewEmail] = useState("");
   const [newTelefone, setNewTelefone] = useState("");
   const [newLogradouro, setNewLogradouro] = useState("");
+  const [pagination, setPagination] = useState(1);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -36,147 +37,155 @@ export default function ProposalList({ proposalsList, modifyProposalsList }) {
     marginHorizontal: 20,
   };
   return (
-    <View>
-      {proposalsList.map((obj, index) => (
-        <List.Item
-          key={index}
-          title={obj.nome}
-          description={(obj.PJ === true && obj.CNPJ) || obj.CPF}
-          left={(props) => (
-            <List.Icon
-              {...props}
-              icon={
-                obj.termometro <= 30
-                  ? "circle-slice-2"
-                  : obj.termometro <= 50
-                  ? "circle-slice-4"
-                  : obj.termometro <= 80
-                  ? "circle-slice-6"
-                  : "check-circle"
-              }
-            />
-          )}
-          right={(props) => <List.Icon {...props} icon="arrow-expand" />}
-          onPress={() => {
-            setSelectedProposal(obj);
-            showModal();
-          }}
-        />
-      ))}
-      <ScrollView>
-        <Portal>
-          <Modal
-            visible={visible}
-            onDismiss={hideModal}
-            contentContainerStyle={containerStyle}
-          >
-            <Text variant="headlineSmall">
-              {(selectedProposal.PJ && "Empresa") || "Pessoa Física"}
-            </Text>
-            <Text>
-              {(!selectedProposal.PJ && `CPF: ${selectedProposal.CPF}`) ||
-                `CNPJ: ${selectedProposal.CNPJ}`}
-            </Text>
-            {selectedProposal.PJ && (
-              <View>
-                <Text>
-                  Nome Fantasia:{" "}
-                  {selectedProposal.detalhesEmpresa["NOME FANTASIA"]}
-                </Text>
-                <Text>
-                  Razão Social:{" "}
-                  {selectedProposal.detalhesEmpresa["RAZAO SOCIAL"]}
-                </Text>
-                <Text>Status: {selectedProposal.detalhesEmpresa.STATUS}</Text>
-                <Text>
-                  CNAE:{" "}
-                  {selectedProposal.detalhesEmpresa["CNAE PRINCIPAL DESCRICAO"]}{" "}
-                  código:{" "}
-                  {selectedProposal.detalhesEmpresa["CNAE PRINCIPAL CODIGO"]}
-                </Text>
-                <View></View>
-              </View>
+    <ScrollView style={{ marginBottom: 60 }}>
+      {proposalsList.slice(0, 3 * pagination).map((obj, index) => (
+        <View>
+          <List.Item
+            key={index}
+            title={obj.nome}
+            description={(obj.PJ === true && obj.CNPJ) || obj.CPF}
+            left={(props) => (
+              <List.Icon
+                {...props}
+                icon={
+                  obj.termometro <= 30
+                    ? "circle-slice-2"
+                    : obj.termometro <= 50
+                    ? "circle-slice-4"
+                    : obj.termometro <= 80
+                    ? "circle-slice-6"
+                    : "check-circle"
+                }
+              />
             )}
-            <Text>Nome: {selectedProposal.nome}</Text>
-            <View style={styles.editableData}>
-              <Text>Email: </Text>
-              {(!edit && <Text>{selectedProposal.email}</Text>) || (
-                <TextInput
-                  style={styles.editableInput}
-                  defaultValue={selectedProposal.email}
-                  onChangeText={(text) => {
-                    setNewEmail(text);
-                  }}
-                />
-              )}
-            </View>
+            right={(props) => <List.Icon {...props} icon="arrow-expand" />}
+            onPress={() => {
+              setSelectedProposal(obj);
+              showModal();
+            }}
+          />
+          <Divider />
+        </View>
+      ))}
+      {proposalsList.length > 3 * pagination && (
+        <FAB
+          style={{ alignSelf: "center", marginVertical: 10 }}
+          label="Carregar Mais"
+          onPress={() => setPagination(pagination + 1)}
+        />
+      )}
 
-            <View style={styles.editableData}>
-              <Text>Telefone: </Text>
-              {(!edit && <Text>{selectedProposal.telefone}</Text>) || (
-                <TextInput
-                  style={styles.editableInput}
-                  defaultValue={selectedProposal.telefone}
-                  onChangeText={(text) => {
-                    setNewTelefone(text);
-                  }}
-                />
-              )}
+      <Portal>
+        <Modal
+          visible={visible}
+          onDismiss={hideModal}
+          contentContainerStyle={containerStyle}
+        >
+          <Text variant="headlineSmall">
+            {(selectedProposal.PJ && "Empresa") || "Pessoa Física"}
+          </Text>
+          <Text>
+            {(!selectedProposal.PJ && `CPF: ${selectedProposal.CPF}`) ||
+              `CNPJ: ${selectedProposal.CNPJ}`}
+          </Text>
+          {selectedProposal.PJ && (
+            <View>
+              <Text>
+                Nome Fantasia:{" "}
+                {selectedProposal.detalhesEmpresa["NOME FANTASIA"]}
+              </Text>
+              <Text>
+                Razão Social: {selectedProposal.detalhesEmpresa["RAZAO SOCIAL"]}
+              </Text>
+              <Text>Status: {selectedProposal.detalhesEmpresa.STATUS}</Text>
+              <Text>
+                CNAE:{" "}
+                {selectedProposal.detalhesEmpresa["CNAE PRINCIPAL DESCRICAO"]}{" "}
+                código:{" "}
+                {selectedProposal.detalhesEmpresa["CNAE PRINCIPAL CODIGO"]}
+              </Text>
+              <View></View>
             </View>
-            <Text>CEP: {selectedProposal.CEP}</Text>
-            <Text>UF: {selectedProposal.detalhesEndereco?.uf}</Text>
-            <Text>Cidade: {selectedProposal.detalhesEndereco?.localidade}</Text>
-            <Text>Bairro: {selectedProposal.detalhesEndereco?.bairro}</Text>
-
-            <View style={styles.editableData}>
-              <Text>Logradouro: </Text>
-              {(!edit && (
-                <Text>{selectedProposal.detalhesEndereco?.logradouro}</Text>
-              )) || (
-                <TextInput
-                  style={styles.editableInput}
-                  defaultValue={selectedProposal.detalhesEndereco?.logradouro}
-                  onChangeText={(text) => setNewLogradouro(text)}
-                />
-              )}
-            </View>
-            <Text>Complemento: {selectedProposal.complemento}</Text>
-            <Text>
-              Data da Proposta: {JSON.stringify(selectedProposal.criadoEm)}
-            </Text>
-            <Text>Termômetro: {selectedProposal.termometro}%</Text>
-            <View style={styles.icones}>
-              <FAB
-                icon={(!edit && "pencil") || "check"}
-                style={styles.fab}
-                onPress={() => {
-                  editComplete();
-                  setEdit(!edit);
+          )}
+          <Text>Nome: {selectedProposal.nome}</Text>
+          <View style={styles.editableData}>
+            <Text>Email: </Text>
+            {(!edit && <Text>{selectedProposal.email}</Text>) || (
+              <TextInput
+                style={styles.editableInput}
+                defaultValue={selectedProposal.email}
+                onChangeText={(text) => {
+                  setNewEmail(text);
                 }}
               />
-              <FAB
-                icon="trash-can"
-                style={styles.fab}
-                onPress={() => {
-                  setVisible(!visible);
-                  deleteProposal(selectedProposal);
+            )}
+          </View>
+
+          <View style={styles.editableData}>
+            <Text>Telefone: </Text>
+            {(!edit && <Text>{selectedProposal.telefone}</Text>) || (
+              <TextInput
+                style={styles.editableInput}
+                defaultValue={selectedProposal.telefone}
+                onChangeText={(text) => {
+                  setNewTelefone(text);
                 }}
               />
-              <FAB
-                icon="email"
-                style={styles.fab}
-                onPress={() => console.log("Pressed")}
+            )}
+          </View>
+          <Text>CEP: {selectedProposal.CEP}</Text>
+          <Text>UF: {selectedProposal.detalhesEndereco?.uf}</Text>
+          <Text>Cidade: {selectedProposal.detalhesEndereco?.localidade}</Text>
+          <Text>Bairro: {selectedProposal.detalhesEndereco?.bairro}</Text>
+
+          <View style={styles.editableData}>
+            <Text>Logradouro: </Text>
+            {(!edit && (
+              <Text>{selectedProposal.detalhesEndereco?.logradouro}</Text>
+            )) || (
+              <TextInput
+                style={styles.editableInput}
+                defaultValue={selectedProposal.detalhesEndereco?.logradouro}
+                onChangeText={(text) => setNewLogradouro(text)}
               />
-              <FAB
-                icon="whatsapp"
-                style={styles.fab}
-                onPress={() => console.log("Pressed")}
-              />
-            </View>
-          </Modal>
-        </Portal>
-      </ScrollView>
-    </View>
+            )}
+          </View>
+          <Text>Complemento: {selectedProposal.complemento}</Text>
+          <Text>
+            Data da Proposta: {JSON.stringify(selectedProposal.criadoEm)}
+          </Text>
+          <Text>Termômetro: {selectedProposal.termometro}%</Text>
+          <View style={styles.icones}>
+            <FAB
+              icon={(!edit && "pencil") || "check"}
+              style={styles.fab}
+              onPress={() => {
+                editComplete();
+                setEdit(!edit);
+              }}
+            />
+            <FAB
+              icon="trash-can"
+              style={styles.fab}
+              onPress={() => {
+                setVisible(!visible);
+                deleteProposal(selectedProposal);
+              }}
+            />
+            <FAB
+              icon="email"
+              style={styles.fab}
+              onPress={() => console.log("Pressed")}
+            />
+            <FAB
+              icon="whatsapp"
+              style={styles.fab}
+              onPress={() => console.log("Pressed")}
+            />
+          </View>
+        </Modal>
+      </Portal>
+    </ScrollView>
   );
 }
 
