@@ -1,15 +1,17 @@
 import React from "react";
 import { StatusBar } from "expo-status-bar";
-import { KeyboardAvoidingView, StyleSheet, Text, View } from "react-native";
+import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
 import { FAB } from "react-native-paper";
 import { useState, useEffect } from "react";
 import ListSortingAndFiltering from "./ListSorting";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { useProposals } from "./ProposalProvider";
+
 import ProposalList from "./ProposalList";
 
 export default function Homepage({ navigation }) {
-  const [proposals, setProposals] = useState([]);
+  const { proposals, setProposals } = useProposals();
 
   const [sorting, setSorting] = useState("novas");
   const [filters, setFilters] = useState([]);
@@ -120,21 +122,13 @@ export default function Homepage({ navigation }) {
           setTextValue,
         }}
       />
-      <ProposalList
-        proposalsList={proposals}
-        modifyProposalsList={setProposals}
-        sortedProposals={sortedList}
-      />
+      <ProposalList sortedProposals={sortedList} />
+
       <KeyboardAvoidingView style={styles.bottomSection}>
         <FAB
           icon="plus"
           accessibilityLabel="Nova Proposta"
-          onPress={() =>
-            navigation.navigate("Nova Proposta", {
-              proposalsList: proposals,
-              submitNewProposal: setProposals,
-            })
-          }
+          onPress={() => navigation.navigate("Nova Proposta")}
         />
       </KeyboardAvoidingView>
       <StatusBar style="auto" />

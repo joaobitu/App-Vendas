@@ -3,12 +3,9 @@ import { View, StyleSheet, ScrollView, TextInput, Linking } from "react-native";
 
 import { useState } from "react";
 import { Modal, Portal, Text, List, FAB, Divider } from "react-native-paper";
+import { useProposals } from "./ProposalProvider";
 
-export default function ProposalList({
-  proposalsList,
-  modifyProposalsList,
-  sortedProposals,
-}) {
+export default function ProposalList({ sortedProposals }) {
   const [selectedProposal, setSelectedProposal] = useState({});
   const [visible, setVisible] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -17,23 +14,25 @@ export default function ProposalList({
   const [newLogradouro, setNewLogradouro] = useState("");
   const [pagination, setPagination] = useState(1);
 
+  const { proposals, setProposals } = useProposals();
+
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
 
   const deleteProposal = (proposal) => {
-    const newProposalsList = proposalsList.filter(
+    const newProposalsList = proposals.filter(
       (obj) => obj.key !== proposal.key
     );
-    modifyProposalsList(newProposalsList);
+    setProposals(newProposalsList);
   };
   const editComplete = () => {
-    const newProposalsList = [...proposalsList];
+    const newProposalsList = [...proposals];
 
     newProposalsList[selectedProposal.key - 1].detalhesEndereco.logradouro =
       newLogradouro;
     newProposalsList[selectedProposal.key - 1].telefone = newTelefone;
     newProposalsList[selectedProposal.key - 1].email = newEmail;
-    modifyProposalsList(newProposalsList);
+    setProposals(newProposalsList);
   };
   const containerStyle = {
     backgroundColor: "white",
@@ -68,7 +67,7 @@ export default function ProposalList({
               showModal();
             }}
           />
-          <Divider />
+          <Divider key={index + 1} />
         </View>
       ))}
       {sortedProposals.length > 3 * pagination && (

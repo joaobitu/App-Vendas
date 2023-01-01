@@ -11,6 +11,7 @@ import { TextInput, List, Switch, Divider, FAB } from "react-native-paper";
 import { TextInputMask } from "react-native-masked-text";
 import { useState } from "react";
 import Slider from "@react-native-community/slider";
+import { useProposals } from "./ProposalProvider";
 
 //pegando as dimensões da tela para implementar correntamente o modal
 const screenDimensions = {
@@ -32,8 +33,7 @@ const NewProposalModal = ({ route, navigation }) => {
   const [detalhesEmpresa, setDetalhesEmpresa] = useState({});
   const [detalhesEndereco, setDetalhesEndereco] = useState({});
 
-  const { proposalsList } = route.params;
-  const { submitNewProposal } = route.params;
+  const { proposals, setProposals } = useProposals();
 
   const getCEPData = async (cep) => {
     const cleanCEP = cep.replace(/\D/g, "");
@@ -258,8 +258,8 @@ const NewProposalModal = ({ route, navigation }) => {
             accessibilityLabel="Nova Proposta"
             style={styles.bottomSection}
             onPress={() => {
-              submitNewProposal([
-                ...proposalsList,
+              setProposals([
+                ...proposals,
                 {
                   CEP,
                   CNPJ,
@@ -273,7 +273,7 @@ const NewProposalModal = ({ route, navigation }) => {
                   detalhesEmpresa,
                   detalhesEndereco,
                   criadoEm: new Date(),
-                  key: proposalsList.length + 1,
+                  key: proposals.length + 1,
                 },
               ]);
               navigation.navigate("Propostas");
