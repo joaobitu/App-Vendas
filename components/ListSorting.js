@@ -30,7 +30,7 @@ const ListSortingAndFiltering = ({ submitSortedVersion, proposalsList }) => {
     marginHorizontal: 20,
   };
 
-  const [selectedSearch, setSelectedSearch] = useState("");
+  const [selectedSearch, setSelectedSearch] = useState("Nome");
   const [textValue, setTextValue] = useState("");
 
   const addToFilters = (filter) => {
@@ -81,6 +81,14 @@ const ListSortingAndFiltering = ({ submitSortedVersion, proposalsList }) => {
     if (searchOption === "Nome") {
       sortedVersion = sortedVersion.filter((obj) =>
         obj.nome.startsWith(searchText)
+      );
+    } else if (searchOption === "Telefone") {
+      sortedVersion = sortedVersion.filter((obj) =>
+        obj.telefone.replace(/\D/g, "").startsWith(searchText)
+      );
+    } else {
+      sortedVersion = sortedVersion.filter((obj) =>
+        obj.email.startsWith(searchText)
       );
     }
     submitSortedVersion(sortedVersion);

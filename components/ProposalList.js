@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, ScrollView, TextInput } from "react-native";
+import { View, StyleSheet, ScrollView, TextInput, Linking } from "react-native";
 
 import { useState } from "react";
 import { Modal, Portal, Text, List, FAB, Divider } from "react-native-paper";
@@ -179,12 +179,23 @@ export default function ProposalList({
             <FAB
               icon="email"
               style={styles.fab}
-              onPress={() => console.log("Pressed")}
+              onPress={() =>
+                Linking.openURL(
+                  `mailto:${selectedProposal.email}?subject=Ol%C3%A1%2C%20aqui%20%C3%A9%20o%20Daniel%20da%20UnyPax%21&body=%0AGostaria%20de%20Informar%20que%20contratamos%20um%20novo%20desenvolvedor%20mobile%21%20O%20nome%20dele%20%C3%A9%20Jo%C3%A3o%21%20o%20cara%20se%20garante%20demais%2C%20ent%C3%A3o%20n%C3%B3s%20estamos%20expandido%20nossos%20produtos%20com%20uma%20linha%20de%20aplicativos%20para%20celular%20que%20v%C3%A3o%20potencializar%20ainda%20mais%20a%20tua%20parceiria%20consco%2C%20valeu%21%0AQualquer%20coisa%20me%20liga%20no%3A%20%2862%29%2098148-6032.`
+                )
+              }
             />
             <FAB
               icon="whatsapp"
               style={styles.fab}
-              onPress={() => console.log("Pressed")}
+              onPress={() =>
+                Linking.openURL(
+                  `https://wa.me/55${selectedProposal.telefone.replace(
+                    /\D/g,
+                    ""
+                  )}/?text=%0AGostaria%20de%20Informar%20que%20contratamos%20um%20novo%20desenvolvedor%20mobile%21%20O%20nome%20dele%20%C3%A9%20Jo%C3%A3o%21%20o%20cara%20se%20garante%20demais%2C%20ent%C3%A3o%20n%C3%B3s%20estamos%20expandido%20nossos%20produtos%20com%20uma%20linha%20de%20aplicativos%20para%20celular%20que%20v%C3%A3o%20potencializar%20ainda%20mais%20a%20tua%20parceiria%20consco%2C%20valeu%21%0AQualquer%20coisa%20%C3%A9%20s%C3%B3%20responder%20a%20mensagem%21.`
+                )
+              }
             />
           </View>
         </Modal>
