@@ -7,7 +7,7 @@ import { Modal, Portal, Text, List, FAB, Divider } from "react-native-paper";
 export default function ProposalList({
   proposalsList,
   modifyProposalsList,
-  sortedList,
+  sortedProposals,
 }) {
   const [selectedProposal, setSelectedProposal] = useState({});
   const [visible, setVisible] = useState(false);
@@ -42,7 +42,7 @@ export default function ProposalList({
   };
   return (
     <ScrollView style={{ marginBottom: 60 }}>
-      {sortedList.slice(0, 3 * pagination).map((obj, index) => (
+      {sortedProposals.slice(0, 3 * pagination).map((obj, index) => (
         <View>
           <List.Item
             key={index}
@@ -71,7 +71,7 @@ export default function ProposalList({
           <Divider />
         </View>
       ))}
-      {sortedList.length > 3 * pagination && (
+      {sortedProposals.length > 3 * pagination && (
         <FAB
           style={{ alignSelf: "center", marginVertical: 10 }}
           label="Carregar Mais"

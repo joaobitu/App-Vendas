@@ -13,14 +13,11 @@ import SelectDropdown from "react-native-select-dropdown";
 import { useState, useEffect } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-const ListSortingAndFiltering = ({ submitSortedVersion, proposalsList }) => {
+const ListSortingAndFiltering = ({ sortAndFilter }) => {
   // Sort the data array in-place using the sortKey
   const searchList = ["Nome", "Email", "Telefone"];
-  const [sorting, setSorting] = useState("novas");
-  const [filters, setFilters] = useState([]);
-  const [isPJ, setIsPJ] = useState(true);
 
-  const [visible, setVisible] = React.useState(false);
+  const [visible, setVisible] = useState(false);
 
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
@@ -30,73 +27,18 @@ const ListSortingAndFiltering = ({ submitSortedVersion, proposalsList }) => {
     marginHorizontal: 20,
   };
 
-  const [selectedSearch, setSelectedSearch] = useState("Nome");
-  const [textValue, setTextValue] = useState("");
-
   const addToFilters = (filter) => {
-    const newFilters = [...filters];
+    const newFilters = [...sortAndFilter.filters];
     newFilters.push(filter);
-    setFilters(newFilters);
+    sortAndFilter.setFilters(newFilters);
   };
 
   const removeFromFilters = (filter) => {
-    const newFiltersList = filters.filter((obj) => obj !== filter);
-    setFilters(newFiltersList);
+    const newFiltersList = sortAndFilter.filters.filter(
+      (obj) => obj !== filter
+    );
+    sortAndFilter.setFilters(newFiltersList);
   };
-
-  const sortProposals = (
-    sortingChoice,
-    PJ,
-    filtersArray,
-    searchText,
-    searchOption
-  ) => {
-    let sortedVersion = [...proposalsList];
-    //filtering between PJ and PF
-    if (PJ) {
-      sortedVersion = sortedVersion.filter((obj) => obj.PJ === true);
-    } else {
-      sortedVersion = sortedVersion.filter((obj) => obj.PJ !== true);
-    }
-    // filtering if it has the Chips selected
-    filtersArray.map((obj) => {
-      if (obj === "Apenas Goiânia") {
-        sortedVersion = sortedVersion.filter(
-          (obj) => obj.detalhesEndereco?.logradouro === "Goiânia"
-        );
-      } else if (obj === "Termômetro > 50") {
-        sortedVersion = sortedVersion.filter((obj) => obj.termometro >= 50);
-      }
-    });
-    // sorting between quentes or novos
-    if (sortingChoice == "quentes") {
-      sortedVersion.sort((a, b) => b.termometro - a.termometro);
-      console.log(sortedVersion);
-    } else {
-      sortedVersion.sort((a, b) => {
-        a.criadoEm - b.criadoEm;
-      });
-    }
-    console.log(searchOption);
-    if (searchOption === "Nome") {
-      sortedVersion = sortedVersion.filter((obj) =>
-        obj.nome.startsWith(searchText)
-      );
-    } else if (searchOption === "Telefone") {
-      sortedVersion = sortedVersion.filter((obj) =>
-        obj.telefone.replace(/\D/g, "").startsWith(searchText)
-      );
-    } else {
-      sortedVersion = sortedVersion.filter((obj) =>
-        obj.email.startsWith(searchText)
-      );
-    }
-    submitSortedVersion(sortedVersion);
-  };
-
-  useEffect(() => {
-    sortProposals(sorting, isPJ, filters, textValue, selectedSearch);
-  }, [sorting, isPJ, filters, textValue, selectedSearch]);
 
   return (
     <View>
@@ -104,7 +46,7 @@ const ListSortingAndFiltering = ({ submitSortedVersion, proposalsList }) => {
         <Searchbar
           placeholder={`Busque pelo`}
           style={{ width: "65%" }}
-          onChangeText={(text) => setTextValue(text)}
+          onChangeText={(text) => sortAndFilter.setTextValue(text)}
         />
 
         <SelectDropdown
@@ -126,7 +68,7 @@ const ListSortingAndFiltering = ({ submitSortedVersion, proposalsList }) => {
           }}
           data={searchList}
           onSelect={(selectedItem) => {
-            setSelectedSearch(selectedItem);
+            sortAndFilter.setSelectedSearch(selectedItem);
           }}
         />
       </View>
@@ -144,8 +86,8 @@ const ListSortingAndFiltering = ({ submitSortedVersion, proposalsList }) => {
         >
           <SegmentedButtons
             style={{ marginVertical: 10 }}
-            value={sorting}
-            onValueChange={setSorting}
+            value={sortAndFilter.sorting}
+            onValueChange={sortAndFilter.setSorting}
             buttons={[
               {
                 value: "quentes",
@@ -166,8 +108,11 @@ const ListSortingAndFiltering = ({ submitSortedVersion, proposalsList }) => {
               alignItems: "center",
             }}
           >
-            {(isPJ && <Text>PJ</Text>) || <Text>PF</Text>}
-            <Switch value={isPJ} onChange={() => setIsPJ(!isPJ)} />
+            {(sortAndFilter.isPJ && <Text>PJ</Text>) || <Text>PF</Text>}
+            <Switch
+              value={sortAndFilter.isPJ}
+              onChange={() => sortAndFilter.setIsPJ(!sortAndFilter.isPJ)}
+            />
           </View>
           <View
             style={{
@@ -178,9 +123,9 @@ const ListSortingAndFiltering = ({ submitSortedVersion, proposalsList }) => {
           >
             <Chip
               style={{ margin: 2 }}
-              selected={filters.indexOf("Termômetro > 50") !== -1}
+              selected={sortAndFilter.filters.indexOf("Termômetro > 50") !== -1}
               onPress={() => {
-                filters.indexOf("Termômetro > 50") === -1
+                sortAndFilter.filters.indexOf("Termômetro > 50") === -1
                   ? addToFilters("Termômetro > 50")
                   : removeFromFilters("Termômetro > 50");
               }}
@@ -189,9 +134,9 @@ const ListSortingAndFiltering = ({ submitSortedVersion, proposalsList }) => {
             </Chip>
             <Chip
               style={{ margin: 2 }}
-              selected={filters.indexOf("Apenas Goiânia") !== -1}
+              selected={sortAndFilter.filters.indexOf("Apenas Goiânia") !== -1}
               onPress={() => {
-                filters.indexOf("Apenas Goiânia") === -1
+                sortAndFilter.filters.indexOf("Apenas Goiânia") === -1
                   ? addToFilters("Apenas Goiânia")
                   : removeFromFilters("Apenas Goiânia");
               }}
