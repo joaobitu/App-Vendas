@@ -33,7 +33,7 @@ export default function Homepage({ navigation }) {
   const getData = async (value) => {
     try {
       const jsonValue = await AsyncStorage.getItem(`${value}`);
-      return jsonValue != null ? JSON.parse(jsonValue) : null;
+      return jsonValue != null ? JSON.parse(jsonValue) : [];
     } catch (e) {
       // error reading value
     }
@@ -74,15 +74,15 @@ export default function Homepage({ navigation }) {
 
     if (searchOption === "Nome") {
       sortedVersion = sortedVersion.filter((obj) =>
-        obj.nome.startsWith(searchText)
+        obj?.nome.startsWith(searchText)
       );
     } else if (searchOption === "Telefone") {
       sortedVersion = sortedVersion.filter((obj) =>
-        obj.telefone.replace(/\D/g, "").startsWith(searchText)
+        obj?.telefone.replace(/\D/g, "").startsWith(searchText)
       );
     } else {
       sortedVersion = sortedVersion.filter((obj) =>
-        obj.email.startsWith(searchText)
+        obj?.email.startsWith(searchText)
       );
     }
     return sortedVersion;
@@ -91,7 +91,6 @@ export default function Homepage({ navigation }) {
   useEffect(() => {
     const getDataAsync = async () => {
       const data = await getData("proposals");
-      console.log("I am rendering");
 
       setProposals(data);
     };
