@@ -41,7 +41,7 @@ export default function ProposalList({ sortedProposals }) {
   };
   return (
     <ScrollView style={{ marginBottom: 60 }}>
-      {sortedProposals.slice(0, 3 * pagination).map((obj, index) => (
+      {sortedProposals.slice(0, 8 * pagination).map((obj, index) => (
         <View>
           <List.Item
             key={index}
@@ -67,10 +67,9 @@ export default function ProposalList({ sortedProposals }) {
               showModal();
             }}
           />
-          <Divider key={index + 1} />
         </View>
       ))}
-      {sortedProposals.length > 3 * pagination && (
+      {sortedProposals.length > 8 * pagination && (
         <FAB
           style={{ alignSelf: "center", marginVertical: 10 }}
           label="Carregar Mais"

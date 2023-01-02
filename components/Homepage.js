@@ -1,10 +1,11 @@
 import React from "react";
-import { StatusBar } from "expo-status-bar";
+
 import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
-import { FAB } from "react-native-paper";
+import { FAB, Portal, Modal } from "react-native-paper";
 import { useState, useEffect } from "react";
 import ListSortingAndFiltering from "./ListSorting";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import SalesMap from "./SalesMap";
 
 import { useProposals } from "./ProposalProvider";
 
@@ -20,6 +21,12 @@ export default function Homepage({ navigation }) {
   const [textValue, setTextValue] = useState("");
 
   const [sortedList, setSortedList] = useState([]);
+
+  const [visible, setVisible] = React.useState(false);
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
+  const containerStyle = { backgroundColor: "white", padding: 20 };
 
   const storeData = async (value) => {
     try {
@@ -121,6 +128,7 @@ export default function Homepage({ navigation }) {
           setTextValue,
         }}
       />
+
       <ProposalList sortedProposals={sortedList} />
 
       <KeyboardAvoidingView style={styles.bottomSection}>
@@ -129,8 +137,17 @@ export default function Homepage({ navigation }) {
           accessibilityLabel="Nova Proposta"
           onPress={() => navigation.navigate("Nova Proposta")}
         />
+        <FAB icon="chart-bar" accessibilityLabel="Dados" onPress={showModal} />
       </KeyboardAvoidingView>
-      <StatusBar style="auto" />
+      <Portal>
+        <Modal
+          visible={visible}
+          onDismiss={hideModal}
+          contentContainerStyle={containerStyle}
+        >
+          <SalesMap />
+        </Modal>
+      </Portal>
     </View>
   );
 }
@@ -144,7 +161,11 @@ const styles = StyleSheet.create({
 
   bottomSection: {
     position: "absolute",
+
     bottom: 50,
     right: 20,
+    flexDirection: "row-reverse",
+    width: "100%",
+    justifyContent: "space-between",
   },
 });
