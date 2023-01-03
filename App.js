@@ -1,9 +1,9 @@
 import { Provider as PaperProvider } from "react-native-paper";
-import NewProposalModal from "./components/NewProposalModal";
-import { ProposalsProvider } from "./components/ProposalProvider";
+import NewProposalModal from "./src/layout/NewProposalModal";
+import { ProposalsProvider } from "./src/hooks/ProposalProvider";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Homepage from "./components/Homepage";
+import Homepage from "./src/layout/Homepage";
 
 const Stack = createNativeStackNavigator();
 

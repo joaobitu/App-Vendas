@@ -11,7 +11,7 @@ import { TextInput, List, Switch, Divider, FAB } from "react-native-paper";
 import { TextInputMask } from "react-native-masked-text";
 import { useState } from "react";
 import Slider from "@react-native-community/slider";
-import { useProposals } from "./ProposalProvider";
+import { useProposals } from "../hooks/ProposalProvider";
 
 //pegando as dimensões da tela para implementar correntamente o modal
 const screenDimensions = {

@@ -3,13 +3,13 @@ import React from "react";
 import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
 import { FAB, Portal, Modal } from "react-native-paper";
 import { useState, useEffect } from "react";
-import ListSortingAndFiltering from "./ListSorting";
+import ListSortingAndFiltering from "../components/ListSorting";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import SalesMap from "./SalesMap";
+import SalesMap from "../components/SalesMap";
 
-import { useProposals } from "./ProposalProvider";
+import { useProposals } from "../hooks/ProposalProvider";
 
-import ProposalList from "./ProposalList";
+import ProposalList from "../components/ProposalList";
 
 export default function Homepage({ navigation }) {
   const { proposals, setProposals } = useProposals();
