@@ -11,9 +11,10 @@ import { TextInput, List, Switch, Divider, FAB } from "react-native-paper";
 import { TextInputMask } from "react-native-masked-text";
 import { useState } from "react";
 import Slider from "@react-native-community/slider";
-import { useProposals } from "./ProposalProvider";
+import { useProposals } from "../global_state/ProposalProvider";
+import { getCEPData, getCNPJData } from "../api/api";
 
-//pegando as dimensões da tela para implementar correntamente o modal
+//pegando as dimensões da tela para implementar correntamente o layout
 const screenDimensions = {
   height: Dimensions.get("window").height,
   width: Dimensions.get("window").width,
@@ -24,7 +25,6 @@ const NewProposalModal = ({ route, navigation }) => {
   const [CPF, setCPF] = useState("");
   const [CEP, setCEP] = useState("");
   const [PJ, setPJ] = useState(true);
-  const [error, setError] = useState("");
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
@@ -35,53 +35,21 @@ const NewProposalModal = ({ route, navigation }) => {
 
   const { proposals, setProposals } = useProposals();
 
-  const getCEPData = async (cep) => {
-    const cleanCEP = cep.replace(/\D/g, "");
-
-    try {
-      const response = await fetch(
-        `https://viacep.com.br/ws/${cleanCEP}/json/`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setDetalhesEndereco(data);
-      } else {
-        throw new Error(`Request failed: ${response.statusText}`);
-      }
-    } catch (error) {
-      setError(error.message);
-    }
-  };
-  const getCNPJData = async (cnpj) => {
-    const cleanCNPJ = cnpj.replace(/\D/g, "");
-
-    try {
-      const response = await fetch(
-        `https://api-publica.speedio.com.br/buscarcnpj?cnpj=${cleanCNPJ}`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setDetalhesEmpresa(data);
-      } else {
-        throw new Error(`Request failed: ${response.status}`);
-      }
-    } catch (error) {
-      setError(error.message);
-    }
-  };
   useEffect(() => {
     if (CNPJ.length === 18) {
-      getCNPJData(CNPJ);
+      const companyExpanded = async () =>
+        await getCNPJData(CNPJ.replace(/\D/g, ""));
+      setDetalhesEmpresa(companyExpanded);
     }
     if (CEP.length === 9) {
-      getCEPData(CEP);
+      const adressExpanded = async () =>
+        await getCEPData(CEP.replace(/\D/g, ""));
+      setDetalhesEndereco(adressExpanded);
     }
   }, [CNPJ, CEP]);
 
   return (
     <View style={styles.container}>
-      <Text>{error}</Text>
-
       <KeyboardAvoidingView style={{ paddingBottom: 120 }}>
         <ScrollView style={styles.formArea}>
           <TextInput

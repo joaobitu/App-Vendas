@@ -2,8 +2,8 @@ import React from "react";
 import { View, StyleSheet, ScrollView, TextInput, Linking } from "react-native";
 
 import { useState } from "react";
-import { Modal, Portal, Text, List, FAB, Divider } from "react-native-paper";
-import { useProposals } from "./ProposalProvider";
+import { Modal, Portal, Text, List, FAB } from "react-native-paper";
+import { useProposals } from "../global_state/ProposalProvider";
 
 export default function ProposalList({ sortedProposals }) {
   const [selectedProposal, setSelectedProposal] = useState({});

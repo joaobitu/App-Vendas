@@ -3,13 +3,14 @@ import React from "react";
 import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
 import { FAB, Portal, Modal } from "react-native-paper";
 import { useState, useEffect } from "react";
-import ListSortingAndFiltering from "./ListSorting";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import SalesMap from "./SalesMap";
+import ListSortingAndFiltering from "../elements/ListSorting";
 
-import { useProposals } from "./ProposalProvider";
+import SalesMap from "../elements/SalesMap";
+import { getProposalsData, storeProposalsData } from "../api/api.js";
 
-import ProposalList from "./ProposalList";
+import { useProposals } from "../global_state/ProposalProvider";
+
+import ProposalList from "../elements/ProposalList";
 
 export default function Homepage({ navigation }) {
   const { proposals, setProposals } = useProposals();
@@ -28,23 +29,6 @@ export default function Homepage({ navigation }) {
   const hideModal = () => setVisible(false);
   const containerStyle = { backgroundColor: "white", padding: 20 };
 
-  const storeData = async (value) => {
-    try {
-      const jsonValue = JSON.stringify(value);
-
-      await AsyncStorage.setItem(`${value}`, jsonValue);
-    } catch (e) {
-      return e.message;
-    }
-  };
-  const getData = async (value) => {
-    try {
-      const jsonValue = await AsyncStorage.getItem(`${value}`);
-      return jsonValue != null ? JSON.parse(jsonValue) : [];
-    } catch (e) {
-      // error reading value
-    }
-  };
   const sortProposals = (
     sortingChoice,
     PJ,
@@ -97,15 +81,16 @@ export default function Homepage({ navigation }) {
 
   useEffect(() => {
     const getDataAsync = async () => {
-      const data = await getData("proposals");
+      const data = await getProposalsData("proposals");
 
       setProposals(data);
     };
-    getDataAsync();
+    getDataAsync().then();
   }, []);
 
   useEffect(() => {
-    storeData(proposals);
+    const sendData = async () => await storeProposalsData(proposals);
+    sendData().then();
     setSortedList(
       sortProposals(sorting, isPJ, filters, textValue, selectedSearch)
     );

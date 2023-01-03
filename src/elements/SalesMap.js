@@ -1,7 +1,7 @@
 import React from "react";
-import { View, Text, SafeAreaView, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { FAB } from "react-native-paper";
-import { useProposals } from "./ProposalProvider";
+import { useProposals } from "../global_state/ProposalProvider";
 import { useState } from "react";
 
 const SalesMap = () => {
